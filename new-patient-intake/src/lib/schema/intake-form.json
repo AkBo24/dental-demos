@@ -1,0 +1,458 @@
+{
+  "form_name": "Dental New Patient Intake",
+  "version": "1.0",
+  "sections": [
+    {
+      "id": "patient_demographics",
+      "title": "Patient Demographics",
+      "fields": [
+        {
+          "id": "first_name",
+          "label": "First Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "last_name",
+          "label": "Last Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "middle_initial",
+          "label": "Middle Initial",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "preferred_name",
+          "label": "Preferred Name",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "gender",
+          "label": "Gender",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Male",
+            "Female",
+            "Non-binary",
+            "Other",
+            "Prefer not to answer"
+          ]
+        },
+        {
+          "id": "family_status",
+          "label": "Family Status",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Single",
+            "Married",
+            "Divorced",
+            "Widowed",
+            "Partnered",
+            "Other"
+          ]
+        },
+        {
+          "id": "birth_date",
+          "label": "Birth Date",
+          "type": "date",
+          "required": true
+        },
+        {
+          "id": "email",
+          "label": "Email Address",
+          "type": "email",
+          "required": true
+        },
+        {
+          "id": "phone_home",
+          "label": "Home Phone",
+          "type": "phone",
+          "required": false
+        },
+        {
+          "id": "phone_work",
+          "label": "Work Phone",
+          "type": "phone",
+          "required": false
+        },
+        {
+          "id": "phone_extension",
+          "label": "Phone Extension",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "phone_mobile",
+          "label": "Mobile Phone",
+          "type": "phone",
+          "required": true
+        },
+        {
+          "id": "address_street",
+          "label": "Street Address",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "address_city",
+          "label": "City",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "address_state",
+          "label": "State",
+          "type": "select",
+          "required": true,
+          "options": "US_STATES"
+        },
+        {
+          "id": "zip_code",
+          "label": "ZIP Code",
+          "type": "zipcode",
+          "required": true
+        },
+        {
+          "id": "referral_source",
+          "label": "Whom may we thank for referring you?",
+          "type": "textarea",
+          "required": false
+        },
+        {
+          "id": "emergency_contact",
+          "label": "Emergency Contact",
+          "type": "textarea",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "employment",
+      "title": "Employment Information",
+      "fields": [
+        {
+          "id": "employer_name",
+          "label": "Employer Name",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "responsible_party",
+      "title": "Responsible Party",
+      "fields": [
+        {
+          "id": "relationship_to_patient",
+          "label": "Relationship to Patient",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Self",
+            "Spouse",
+            "Child",
+            "Other"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "primary_insurance",
+      "title": "Primary Dental Insurance",
+      "fields": [
+        {
+          "id": "subscriber_first_name",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "subscriber_last_name",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "subscriber_birth_date",
+          "type": "date",
+          "required": false
+        },
+        {
+          "id": "subscriber_id",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "group_number",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "subscriber_employer",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "patient_relationship_to_subscriber",
+          "type": "select",
+          "options": [
+            "Self",
+            "Spouse",
+            "Child",
+            "Other"
+          ]
+        },
+        {
+          "id": "insurance_plan",
+          "type": "searchable_select",
+          "options": "Insurance Carrier Database"
+        },
+        {
+          "id": "insurance_address_street",
+          "type": "text"
+        },
+        {
+          "id": "insurance_address_city",
+          "type": "text"
+        },
+        {
+          "id": "insurance_card_front",
+          "type": "file_upload",
+          "accepted_types": [
+            "image/*",
+            "application/pdf"
+          ]
+        },
+        {
+          "id": "insurance_card_back",
+          "type": "file_upload",
+          "accepted_types": [
+            "image/*",
+            "application/pdf"
+          ]
+        },
+        {
+          "id": "insurance_authorization",
+          "type": "checkbox"
+        }
+      ]
+    },
+    {
+      "id": "secondary_insurance",
+      "title": "Secondary Dental Insurance",
+      "inherits": "primary_insurance"
+    },
+    {
+      "id": "medical_history",
+      "title": "Medical History",
+      "fields": [
+        {
+          "id": "medical_conditions",
+          "label": "Medical Conditions",
+          "type": "checkbox_group",
+          "options": [
+            "Pre-Med - Amoxicillin",
+            "Pre-Med - Clindamycin",
+            "Pre-Med - Other",
+            "Allergies",
+            "Allergy - Aspirin",
+            "Allergy - Codeine",
+            "Allergy - Erythromycin",
+            "Allergy - Hay Fever",
+            "Allergy - Latex",
+            "Allergy - Other",
+            "Allergy - Penicillin",
+            "Allergy - Sulfa",
+            "Anemia",
+            "Arthritis",
+            "Artificial Joints",
+            "Asthma",
+            "Blood Disease",
+            "Cancer",
+            "Diabetes",
+            "Dizziness",
+            "Epilepsy",
+            "Excessive Bleeding",
+            "Fainting",
+            "Glaucoma",
+            "HIV",
+            "Head Injuries",
+            "Heart Disease",
+            "Heart Murmur",
+            "Hepatitis",
+            "High Blood Pressure",
+            "Hypertrophic Cardiomyopathy",
+            "Jaundice",
+            "Kidney Disease",
+            "Liver Disease",
+            "Mental Disorders",
+            "Nervous Disorders",
+            "Pacemaker",
+            "Pregnancy",
+            "Radiation Treatment",
+            "Respiratory Problems",
+            "Rheumatic Fever",
+            "Rheumatism",
+            "Sinus Problems",
+            "Stomach Problems",
+            "Stroke",
+            "Tuberculosis",
+            "Tumors",
+            "Ulcers",
+            "Venereal Disease",
+            "Other"
+          ]
+        },
+        {
+          "id": "medical_conditions_other",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "id": "allergies",
+      "title": "Allergies",
+      "fields": [
+        {
+          "id": "allergy_list",
+          "type": "checkbox_group",
+          "options": [
+            "Banana",
+            "Egg",
+            "Lavender",
+            "Melon",
+            "Miconazole",
+            "Nut"
+          ]
+        },
+        {
+          "id": "other_allergies",
+          "type": "textarea"
+        },
+        {
+          "id": "allergy_notes",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "id": "medications",
+      "title": "Medications",
+      "fields": [
+        {
+          "id": "medications",
+          "type": "multi_select"
+        },
+        {
+          "id": "other_medications",
+          "type": "textarea"
+        },
+        {
+          "id": "preferred_pharmacy",
+          "type": "text"
+        },
+        {
+          "id": "antibiotic_premedication",
+          "type": "radio",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "physician_name_phone",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "id": "dental_history",
+      "title": "Dental History",
+      "fields": [
+        {
+          "id": "immediate_concern",
+          "type": "textarea"
+        },
+        {
+          "id": "previous_dentist",
+          "type": "text"
+        },
+        {
+          "id": "last_exam_date",
+          "type": "date"
+        },
+        {
+          "id": "smile_changes",
+          "type": "textarea"
+        },
+        {
+          "id": "dental_history_checklist",
+          "type": "checkbox_group",
+          "options": [
+            "Complications from past dental treatment",
+            "Reaction to local anesthetic",
+            "Dry mouth",
+            "Food gets trapped between teeth",
+            "Jaw popping/clicking",
+            "Clenching or grinding",
+            "Bleeding gums",
+            "Bad taste or odor",
+            "Loose teeth",
+            "Snoring",
+            "Difficulty getting numb",
+            "Orthodontic treatment",
+            "Sensitive teeth",
+            "Teeth whitening",
+            "Difficulty chewing",
+            "Bite appliance",
+            "Gum disease",
+            "Gum recession",
+            "Burning mouth"
+          ]
+        },
+        {
+          "id": "dental_history_notes",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "id": "consents",
+      "title": "Policies and Consent",
+      "fields": [
+        {
+          "id": "financial_policy",
+          "type": "checkbox"
+        },
+        {
+          "id": "appointment_policy",
+          "type": "checkbox"
+        },
+        {
+          "id": "hipaa_acknowledgement",
+          "type": "checkbox"
+        },
+        {
+          "id": "hipaa_authorized_people",
+          "type": "text"
+        },
+        {
+          "id": "financial_signature",
+          "type": "signature"
+        },
+        {
+          "id": "medical_history_signature",
+          "type": "signature"
+        },
+        {
+          "id": "consent_to_treatment_signature",
+          "type": "signature"
+        }
+      ]
+    }
+  ]
+}
