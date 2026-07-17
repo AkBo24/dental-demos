@@ -1,22 +1,23 @@
 import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
-import { getRequirementsForTemplate, getTemplate } from '@/data/mockData'
+import { getTemplate, unitCosts } from '@/data/mockData'
 import { useInventoryStore } from '@/store/inventoryStore'
+import { useOperationsStore } from '@/store/operationsStore'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { ErrorState } from '@/components/ui/EmptyState'
 import { currency } from '@/lib/utils'
-import { unitCosts } from '@/data/mockData'
 
 export function ProcedureTemplateDetailPage() {
   const { id } = useParams()
   const template = getTemplate(id ?? '')
   const getItem = useInventoryStore((s) => s.getItem)
+  const templateRequirements = useOperationsStore((s) => s.templateRequirements)
 
   if (!template) {
     return <ErrorState message="Procedure template not found." />
   }
 
-  const reqs = getRequirementsForTemplate(template.id)
+  const reqs = templateRequirements.filter((r) => r.procedureTemplateId === template.id)
   const bomCost = reqs.reduce((sum, r) => {
     const item = getItem(r.itemId)
     if (!item) return sum

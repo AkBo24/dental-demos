@@ -25,6 +25,10 @@ export interface ForecastInput {
   unitCosts: Record<string, number>
   /** Optional planned receipts during the week */
   plannedShipments?: Array<{ itemId: string; quantity: number; date: string; label: string }>
+  /** Prefer visit-specific BOM when present (visit overrides). */
+  getRequirementsForAppointment?: (
+    appointment: Appointment,
+  ) => ProcedureSupplyRequirement[]
 }
 
 function getItemStatusFromQty(qty: number, minimum: number): InventoryStatus {
@@ -136,7 +140,10 @@ export function computeWeeklyForecast(input: ForecastInput): WeeklyForecast {
   const consumption = new Map<string, Acc>()
 
   for (const appt of weekAppointments) {
-    const reqs = reqsByTemplate.get(appt.procedureTemplateId) ?? []
+    const reqs =
+      input.getRequirementsForAppointment?.(appt) ??
+      reqsByTemplate.get(appt.procedureTemplateId) ??
+      []
     const template = templateMap.get(appt.procedureTemplateId)
     for (const req of reqs) {
       const item = itemMap.get(req.itemId)
@@ -208,7 +215,10 @@ export function computeWeeklyForecast(input: ForecastInput): WeeklyForecast {
 
   const sortedAppts = [...weekAppointments].sort((a, b) => a.startTime.localeCompare(b.startTime))
   for (const appt of sortedAppts) {
-    const reqs = reqsByTemplate.get(appt.procedureTemplateId) ?? []
+    const reqs =
+      input.getRequirementsForAppointment?.(appt) ??
+      reqsByTemplate.get(appt.procedureTemplateId) ??
+      []
     const template = templateMap.get(appt.procedureTemplateId)
     const missing: AppointmentRisk['missingSupplies'] = []
 

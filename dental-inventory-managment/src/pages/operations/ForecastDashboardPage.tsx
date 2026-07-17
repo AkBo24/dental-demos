@@ -11,8 +11,9 @@ import { useState } from 'react'
 import { FORECAST_WEEK_START, NEXT_WEEK_START, useWeeklyForecast } from '@/hooks/useWeeklyForecast'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { Modal } from '@/components/ui/Modal'
 import { StatusBadge } from '@/components/ui/StatusBadge'
-import { RiskBadge, RiskScoreGauge } from '@/components/operations/RiskBadge'
+import { RiskBadge } from '@/components/operations/RiskBadge'
 import { currency } from '@/lib/utils'
 import { useInventoryStore } from '@/store/inventoryStore'
 import { useToastStore } from '@/store/toastStore'
@@ -48,6 +49,7 @@ function WeekToggle({
 
 export function ForecastDashboardPage() {
   const [weekStart, setWeekStart] = useState(FORECAST_WEEK_START)
+  const [showLowStock, setShowLowStock] = useState(false)
   const forecast = useWeeklyForecast(weekStart)
   const addToPurchaseList = useInventoryStore((s) => s.addToPurchaseList)
   const updatePurchaseQuantity = useInventoryStore((s) => s.updatePurchaseQuantity)
@@ -126,6 +128,7 @@ export function ForecastDashboardPage() {
             value: String(low.length),
             icon: TrendingDown,
             tone: 'text-amber-800 bg-amber-50',
+            onClick: () => setShowLowStock(true),
           },
           {
             label: 'Projected stockouts',
@@ -133,8 +136,8 @@ export function ForecastDashboardPage() {
             icon: AlertTriangle,
             tone: 'text-rose-800 bg-rose-50',
           },
-        ].map((s) => (
-          <Card key={s.label} className="p-4">
+        ].map((s) => {
+          const content = (
             <div className="flex items-center gap-3">
               <div className={`flex h-10 w-10 items-center justify-center rounded-md ${s.tone}`}>
                 <s.icon className="h-5 w-5" />
@@ -144,24 +147,27 @@ export function ForecastDashboardPage() {
                 <p className="text-sm text-muted">{s.label}</p>
               </div>
             </div>
-          </Card>
-        ))}
+          )
+
+          return s.onClick ? (
+            <button
+              key={s.label}
+              type="button"
+              onClick={s.onClick}
+              aria-label={`View ${s.value} ${s.label.toLowerCase()} items`}
+              className="cursor-pointer rounded-lg border border-line bg-surface p-4 text-left shadow-sm transition-colors hover:border-amber-300 hover:bg-amber-50/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+            >
+              {content}
+            </button>
+          ) : (
+            <Card key={s.label} className="p-4">
+              {content}
+            </Card>
+          )
+        })}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="p-5">
-          <RiskScoreGauge score={forecast.risk.score} label={forecast.risk.label} />
-          <ul className="mt-4 space-y-2">
-            {forecast.risk.reasons.map((r) => (
-              <li key={r} className="flex gap-2 text-sm text-slate-700">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-                {r}
-              </li>
-            ))}
-          </ul>
-        </Card>
-
-        <Card className="lg:col-span-2">
+      <Card>
           <CardHeader
             title="Upcoming procedures at risk"
             description="Required supplies projected insufficient before chair time"
@@ -195,7 +201,6 @@ export function ForecastDashboardPage() {
             </ul>
           )}
         </Card>
-      </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
@@ -317,12 +322,6 @@ export function ForecastDashboardPage() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Link to="/operations/timeline">
-          <Button variant="outline" size="sm">
-            Inventory timeline
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        </Link>
         <Link to="/operations/usage">
           <Button variant="outline" size="sm">
             Supply usage
@@ -336,6 +335,53 @@ export function ForecastDashboardPage() {
           </Button>
         </Link>
       </div>
+
+      <Modal
+        open={showLowStock}
+        onClose={() => setShowLowStock(false)}
+        title="Projected low stock"
+        description={`${low.length} item${low.length === 1 ? '' : 's'} projected below par for this schedule`}
+        footer={
+          <Button variant="outline" onClick={() => setShowLowStock(false)}>
+            Close
+          </Button>
+        }
+      >
+        {low.length === 0 ? (
+          <p className="py-4 text-center text-sm text-muted">
+            No items are projected below par this week.
+          </p>
+        ) : (
+          <ul className="-mx-5 divide-y divide-line">
+            {low.map((item) => (
+              <li key={item.itemId} className="px-5 py-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <Link
+                      to={`/inventory/${item.itemId}`}
+                      onClick={() => setShowLowStock(false)}
+                      className="font-medium text-ink hover:text-brand-700 hover:underline"
+                    >
+                      {item.itemName}
+                    </Link>
+                    <p className="mt-1 text-xs text-muted">
+                      Projected remaining{' '}
+                      <span className="font-semibold text-amber-800">
+                        {item.projectedRemaining} {item.unit}
+                      </span>
+                      {' · '}Par level {item.minimumQuantity} {item.unit}
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted">
+                      Scheduled demand {item.projectedConsumption} {item.unit}
+                    </p>
+                  </div>
+                  <StatusBadge status={item.statusAfter} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Modal>
     </div>
   )
 }

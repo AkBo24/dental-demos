@@ -1,4 +1,4 @@
-import type { Appointment, AppointmentStatus, Operatory, Provider } from '@/types'
+import type { Appointment, Operatory, Provider } from '@/types'
 import { procedureTemplates } from './procedures'
 
 export const providers: Provider[] = [
@@ -27,134 +27,114 @@ export const operatories: Operatory[] = [
   { id: 'op8', name: 'Hygiene 2', roomNumber: 8 },
 ]
 
-const firstNames = [
-  'Jordan', 'Alex', 'Taylor', 'Morgan', 'Casey', 'Riley', 'Quinn', 'Avery', 'Jamie', 'Cameron',
-  'Drew', 'Harper', 'Reese', 'Skyler', 'Parker', 'Rowan', 'Finley', 'Sawyer', 'Emerson', 'Hayden',
-  'Maria', 'Luis', 'Sofia', 'Noah', 'Emma', 'Liam', 'Olivia', 'Ethan', 'Mia', 'Lucas',
-  'Amelia', 'Henry', 'Charlotte', 'Jack', 'Evelyn', 'Daniel', 'Grace', 'Michael', 'Chloe', 'David',
+/** Curated 10-appointment demo schedule for the current clinic week */
+const scheduleSeed: Array<{
+  patientName: string
+  providerId: string
+  operatoryId: string
+  procedureTemplateId: string
+  startTime: string
+  status: Appointment['status']
+  notes?: string
+}> = [
+  {
+    patientName: 'Jordan Smith',
+    providerId: 'pr7',
+    operatoryId: 'op7',
+    procedureTemplateId: 'pt1',
+    startTime: '2026-07-13T08:00:00',
+    status: 'confirmed',
+  },
+  {
+    patientName: 'Maria Garcia',
+    providerId: 'pr1',
+    operatoryId: 'op1',
+    procedureTemplateId: 'pt7',
+    startTime: '2026-07-13T09:30:00',
+    status: 'confirmed',
+  },
+  {
+    patientName: 'Liam Johnson',
+    providerId: 'pr2',
+    operatoryId: 'op2',
+    procedureTemplateId: 'pt10',
+    startTime: '2026-07-14T08:00:00',
+    status: 'scheduled',
+  },
+  {
+    patientName: 'Sofia Martinez',
+    providerId: 'pr8',
+    operatoryId: 'op8',
+    procedureTemplateId: 'pt16',
+    startTime: '2026-07-14T10:00:00',
+    status: 'confirmed',
+  },
+  {
+    patientName: 'Noah Williams',
+    providerId: 'pr3',
+    operatoryId: 'op3',
+    procedureTemplateId: 'pt8',
+    startTime: '2026-07-15T08:00:00',
+    status: 'checked_in',
+  },
+  {
+    patientName: 'Emma Brown',
+    providerId: 'pr5',
+    operatoryId: 'op6',
+    procedureTemplateId: 'pt15',
+    startTime: '2026-07-15T11:00:00',
+    status: 'confirmed',
+    notes: 'Confirm insurance benefits before visit.',
+  },
+  {
+    patientName: 'Ethan Davis',
+    providerId: 'pr1',
+    operatoryId: 'op1',
+    procedureTemplateId: 'pt17',
+    startTime: '2026-07-16T09:30:00',
+    status: 'confirmed',
+  },
+  {
+    patientName: 'Olivia Rodriguez',
+    providerId: 'pr9',
+    operatoryId: 'op7',
+    procedureTemplateId: 'pt1',
+    startTime: '2026-07-16T13:00:00',
+    status: 'scheduled',
+  },
+  {
+    patientName: 'Lucas Anderson',
+    providerId: 'pr4',
+    operatoryId: 'op4',
+    procedureTemplateId: 'pt3',
+    startTime: '2026-07-17T08:00:00',
+    status: 'confirmed',
+  },
+  {
+    patientName: 'Mia Thompson',
+    providerId: 'pr6',
+    operatoryId: 'op5',
+    procedureTemplateId: 'pt18',
+    startTime: '2026-07-17T14:30:00',
+    status: 'scheduled',
+  },
 ]
-
-const lastNames = [
-  'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
-  'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin',
-  'Lee', 'Perez', 'Thompson', 'White', 'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson',
-]
-
-/** Week of Jul 13, 2026 (Mon) through Jul 24, 2026 (Fri next week) — clinic days Mon–Fri */
-const clinicDays = [
-  '2026-07-13',
-  '2026-07-14',
-  '2026-07-15',
-  '2026-07-16',
-  '2026-07-17',
-  '2026-07-20',
-  '2026-07-21',
-  '2026-07-22',
-  '2026-07-23',
-  '2026-07-24',
-]
-
-const statuses: AppointmentStatus[] = ['scheduled', 'confirmed', 'confirmed', 'confirmed', 'checked_in']
-
-/** Procedure mix weighted toward common general practice work */
-const dentistProcedureIds = [
-  'pt3', 'pt4', 'pt5', 'pt6', 'pt7', 'pt7', 'pt8', 'pt8', 'pt9',
-  'pt10', 'pt11', 'pt14', 'pt15', 'pt17', 'pt18', 'pt29', 'pt31', 'pt34', 'pt48', 'pt49', 'pt50',
-  'pt12', 'pt13', 'pt20', 'pt21', 'pt23', 'pt44', 'pt45',
-]
-
-const hygienistProcedureIds = [
-  'pt1', 'pt1', 'pt1', 'pt2', 'pt16', 'pt24', 'pt25', 'pt26', 'pt46', 'pt35',
-]
-
-const specialistProcedureIds = [
-  'pt15', 'pt14', 'pt19', 'pt20', 'pt39', 'pt40', 'pt18', 'pt38', 'pt36',
-]
-
-function pick<T>(arr: T[], n: number): T {
-  return arr[n % arr.length]
-}
 
 function buildAppointments(): Appointment[] {
-  const appointments: Appointment[] = []
-  let seq = 1
-
-  // Assign providers to operatories loosely
-  const dentistProviders = providers.filter((p) => p.role === 'Dentist')
-  const hygienists = providers.filter((p) => p.role === 'Hygienist')
-  const specialists = providers.filter((p) => p.role === 'Specialist')
-
-  for (const day of clinicDays) {
-    // 8 operatories × ~3 appointments average ≈ 24/day × 10 days = 240, plus extras to 250
-    for (let opIndex = 0; opIndex < operatories.length; opIndex++) {
-      const op = operatories[opIndex]
-      const isHygiene = opIndex >= 6
-
-      let provider: Provider
-      let procedurePool: string[]
-      if (isHygiene) {
-        provider = pick(hygienists, opIndex + seq)
-        procedurePool = hygienistProcedureIds
-      } else if (opIndex === 5) {
-        provider = pick(specialists, seq)
-        procedurePool = specialistProcedureIds
-      } else {
-        provider = pick(dentistProviders, opIndex + day.length)
-        procedurePool = dentistProcedureIds
-      }
-
-      // Stagger start times: 8:00, 9:00/9:30, 10:30, 13:00, 14:30 depending on duration
-      const slots = isHygiene
-        ? ['08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:00']
-        : ['08:00', '09:30', '11:00', '13:00', '14:30', '16:00']
-
-      const slotsToday = isHygiene ? slots.slice(0, 4) : slots.slice(0, 3)
-
-      for (let s = 0; s < slotsToday.length; s++) {
-        if (appointments.length >= 250) break
-        const templateId = pick(procedurePool, seq * 7 + s * 3 + opIndex)
-        const template = procedureTemplates.find((t) => t.id === templateId)!
-        const patientName = `${pick(firstNames, seq + s)} ${pick(lastNames, seq * 3 + opIndex)}`
-        const startTime = `${day}T${slotsToday[s]}:00`
-        appointments.push({
-          id: `ap${seq}`,
-          patientName,
-          providerId: provider.id,
-          operatoryId: op.id,
-          procedureTemplateId: templateId,
-          startTime,
-          durationMinutes: template.averageDurationMinutes || 30,
-          status: pick(statuses, seq),
-          notes: seq % 11 === 0 ? 'Confirm insurance benefits before visit.' : undefined,
-        })
-        seq += 1
-      }
-    }
-  }
-
-  // Top up to exactly 250 with overflow afternoon slots
-  let dayIdx = 0
-  while (appointments.length < 250) {
-    const day = clinicDays[dayIdx % clinicDays.length]
-    const op = operatories[appointments.length % operatories.length]
-    const provider = dentistProviders[appointments.length % dentistProviders.length]
-    const templateId = pick(dentistProcedureIds, appointments.length)
-    const template = procedureTemplates.find((t) => t.id === templateId)!
-    appointments.push({
-      id: `ap${seq}`,
-      patientName: `${pick(firstNames, seq)} ${pick(lastNames, seq + 5)}`,
-      providerId: provider.id,
-      operatoryId: op.id,
-      procedureTemplateId: templateId,
-      startTime: `${day}T16:30:00`,
+  return scheduleSeed.map((seed, index) => {
+    const template = procedureTemplates.find((t) => t.id === seed.procedureTemplateId)!
+    return {
+      id: `ap${index + 1}`,
+      patientName: seed.patientName,
+      providerId: seed.providerId,
+      operatoryId: seed.operatoryId,
+      procedureTemplateId: seed.procedureTemplateId,
+      startTime: seed.startTime,
       durationMinutes: template.averageDurationMinutes || 30,
-      status: 'scheduled',
-    })
-    seq += 1
-    dayIdx += 1
-  }
-
-  return appointments
+      status: seed.status,
+      notes: seed.notes,
+    }
+  })
 }
 
 export const appointments: Appointment[] = buildAppointments()

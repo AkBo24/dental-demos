@@ -12,7 +12,6 @@ import { AppointmentDetailPage } from '@/pages/operations/AppointmentDetailPage'
 import { ProcedureTemplatesPage } from '@/pages/operations/ProcedureTemplatesPage'
 import { ProcedureTemplateDetailPage } from '@/pages/operations/ProcedureTemplateDetailPage'
 import { SupplyUsagePage } from '@/pages/operations/SupplyUsagePage'
-import { InventoryTimelinePage } from '@/pages/operations/InventoryTimelinePage'
 
 export default function App() {
   return (
@@ -26,7 +25,6 @@ export default function App() {
           <Route path="operations/templates" element={<ProcedureTemplatesPage />} />
           <Route path="operations/templates/:id" element={<ProcedureTemplateDetailPage />} />
           <Route path="operations/usage" element={<SupplyUsagePage />} />
-          <Route path="operations/timeline" element={<InventoryTimelinePage />} />
 
           <Route path="inventory/dashboard" element={<DashboardPage />} />
           <Route path="inventory" element={<InventoryListPage />} />

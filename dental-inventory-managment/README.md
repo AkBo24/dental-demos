@@ -22,7 +22,6 @@ Open [http://localhost:5173](http://localhost:5173) — lands on the **Forecast*
 | `/operations/appointments/:id` | Appointment supply readiness |
 | `/operations/templates` | Procedure catalog + BOM |
 | `/operations/usage` | Aggregated projected consumption |
-| `/operations/timeline` | Week timeline of shipments / drops / shortages |
 
 ### Inventory (existing)
 
@@ -33,7 +32,7 @@ Stock dashboard, inventory list/detail, receive, reorder, purchase list — unch
 - **200** inventory products  
 - **50** procedure templates with realistic BOMs  
 - **12** providers · **8** operatories  
-- **250** appointments across two clinic weeks (Jul 13–24, 2026)
+- **10** appointments on the procedure schedule (week of Jul 13, 2026)
 
 ## Forecast engine
 

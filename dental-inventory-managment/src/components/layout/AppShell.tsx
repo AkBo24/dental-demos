@@ -10,7 +10,6 @@ import {
   ShoppingCart,
   BookOpen,
   ChartColumn,
-  Waypoints,
   X,
 } from 'lucide-react'
 import { useState } from 'react'
@@ -39,7 +38,6 @@ const sections: NavSection[] = [
       { to: '/operations/schedule', label: 'Procedure Schedule', icon: CalendarDays },
       { to: '/operations/templates', label: 'Procedure Templates', icon: BookOpen },
       { to: '/operations/usage', label: 'Supply Usage', icon: ChartColumn },
-      { to: '/operations/timeline', label: 'Inventory Timeline', icon: Waypoints },
     ],
   },
   {

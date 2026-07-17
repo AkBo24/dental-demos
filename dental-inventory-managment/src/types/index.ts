@@ -112,6 +112,32 @@ export interface ProcedureSupplyRequirement {
   unit: string
   required: boolean
   wastePercent: number
+  notes?: string
+}
+
+/** Where a supply BOM edit should apply */
+export type SupplyChangeScope = 'visit' | 'template'
+
+export type SupplyAvailabilityStatus = 'available' | 'low' | 'out'
+
+export type SupplyAuditAction =
+  | 'edit_quantity'
+  | 'replace_supply'
+  | 'remove_supply'
+  | 'add_supply'
+
+export interface SupplyAuditEntry {
+  id: string
+  user: string
+  timestamp: string
+  action: SupplyAuditAction
+  visitId: string
+  procedureId: string
+  itemId?: string
+  oldValue: string
+  newValue: string
+  reason?: string
+  scope: SupplyChangeScope
 }
 
 export interface Appointment {

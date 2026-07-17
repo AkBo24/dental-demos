@@ -1,0 +1,7 @@
+services:
+  dental-inventory:
+    build: .
+    container_name: dental-inventory
+    ports:
+      - "5173:80"
+    restart: unless-stopped

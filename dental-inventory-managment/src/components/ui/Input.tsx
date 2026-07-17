@@ -67,6 +67,7 @@ export function Input({
   placeholder,
   error,
   required,
+  readOnly,
 }: {
   label: string
   value: string | number
@@ -77,6 +78,7 @@ export function Input({
   placeholder?: string
   error?: string
   required?: boolean
+  readOnly?: boolean
 }) {
   return (
     <label className="flex flex-col gap-1">
@@ -91,9 +93,11 @@ export function Input({
         step={step}
         placeholder={placeholder}
         required={required}
+        readOnly={readOnly}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
           'h-10 rounded-md border bg-white px-3 text-sm text-ink focus:ring-2 focus:outline-none',
+          readOnly && 'cursor-default bg-slate-50 text-slate-600',
           error
             ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-100'
             : 'border-line focus:border-brand-600 focus:ring-brand-100',

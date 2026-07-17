@@ -5,24 +5,26 @@ import {
   appointments,
   getOperatory,
   getProvider,
-  getRequirementsForTemplate,
   getTemplate,
 } from '@/data/mockData'
 import { useInventoryStore } from '@/store/inventoryStore'
+import { useOperationsStore } from '@/store/operationsStore'
 import { useToastStore } from '@/store/toastStore'
 import { useWeeklyForecast } from '@/hooks/useWeeklyForecast'
 import { evaluateAppointmentSupplies } from '@/domain/forecastEngine'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { RiskBadge } from '@/components/operations/RiskBadge'
+import { RequiredSuppliesCard } from '@/components/operations/RequiredSuppliesCard'
 import { ErrorState } from '@/components/ui/EmptyState'
-import { cn } from '@/lib/utils'
 
 export function AppointmentDetailPage() {
   const { id } = useParams()
   const appt = appointments.find((a) => a.id === id)
   const items = useInventoryStore((s) => s.items)
   const addToPurchaseList = useInventoryStore((s) => s.addToPurchaseList)
+  const templateRequirements = useOperationsStore((s) => s.templateRequirements)
+  const visitOverrides = useOperationsStore((s) => s.visitOverrides)
   const pushToast = useToastStore((s) => s.push)
   const forecast = useWeeklyForecast()
 
@@ -31,7 +33,9 @@ export function AppointmentDetailPage() {
   }
 
   const template = getTemplate(appt.procedureTemplateId)
-  const reqs = getRequirementsForTemplate(appt.procedureTemplateId)
+  const reqs =
+    visitOverrides[appt.id] ??
+    templateRequirements.filter((r) => r.procedureTemplateId === appt.procedureTemplateId)
   const provider = getProvider(appt.providerId)
   const operatory = getOperatory(appt.operatoryId)
   const { lines, riskLevel } = evaluateAppointmentSupplies({
@@ -82,7 +86,7 @@ export function AppointmentDetailPage() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-1">
           <CardHeader title="Procedure information" />
-          <dl className="space-y-3 px-4 py-4 sm:px-5 text-sm">
+          <dl className="space-y-3 px-4 py-4 text-sm sm:px-5">
             {[
               ['Patient', appt.patientName],
               ['Provider', provider?.name ?? '—'],
@@ -106,58 +110,7 @@ export function AppointmentDetailPage() {
           </dl>
         </Card>
 
-        <Card className="lg:col-span-2">
-          <CardHeader
-            title="Required supplies"
-            description="Availability for this visit and week demand"
-          />
-          <ul className="divide-y divide-line">
-            {lines.map(({ req, item, stockNeeded, available, weekNeed, ok, warn }) => (
-              <li key={req.id} className="flex items-start gap-3 px-4 py-3 sm:px-5">
-                <span
-                  className={cn(
-                    'mt-0.5 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold',
-                    ok && !warn
-                      ? 'bg-emerald-100 text-emerald-700'
-                      : ok
-                        ? 'bg-amber-100 text-amber-800'
-                        : 'bg-rose-100 text-rose-700',
-                  )}
-                >
-                  {ok && !warn ? '✓' : ok ? '!' : '✕'}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Link
-                      to={`/inventory/${item.id}`}
-                      className="font-medium text-ink hover:text-brand-700 hover:underline"
-                    >
-                      {item.name}
-                    </Link>
-                    {!req.required ? (
-                      <span className="text-[10px] font-semibold tracking-wide text-muted uppercase">
-                        Optional
-                      </span>
-                    ) : null}
-                  </div>
-                  <p className="text-xs text-muted">
-                    Need {stockNeeded.toFixed(2)} {item.unit} for this visit · On hand {available}{' '}
-                    {item.unit} · Week demand ~{weekNeed.toFixed(2)} {item.unit}
-                  </p>
-                  {!ok ? (
-                    <p className="mt-1 text-xs font-medium text-rose-700">
-                      Insufficient for this procedure — order recommended
-                    </p>
-                  ) : warn ? (
-                    <p className="mt-1 text-xs font-medium text-amber-700">
-                      Available now, but week demand may exhaust stock
-                    </p>
-                  ) : null}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </Card>
+        <RequiredSuppliesCard appointment={appt} />
       </div>
     </div>
   )
