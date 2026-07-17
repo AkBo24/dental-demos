@@ -116,6 +116,8 @@ export function ForecastDashboardPage() {
             value: String(forecast.appointmentCount),
             icon: CalendarDays,
             tone: 'text-brand-800 bg-brand-50',
+            to: '/operations/schedule',
+            hoverClass: 'hover:border-brand-300 hover:bg-brand-50/40',
           },
           {
             label: 'Expected material cost',
@@ -129,6 +131,7 @@ export function ForecastDashboardPage() {
             icon: TrendingDown,
             tone: 'text-amber-800 bg-amber-50',
             onClick: () => setShowLowStock(true),
+            hoverClass: 'hover:border-amber-300 hover:bg-amber-50/40',
           },
           {
             label: 'Projected stockouts',
@@ -149,17 +152,36 @@ export function ForecastDashboardPage() {
             </div>
           )
 
-          return s.onClick ? (
-            <button
-              key={s.label}
-              type="button"
-              onClick={s.onClick}
-              aria-label={`View ${s.value} ${s.label.toLowerCase()} items`}
-              className="cursor-pointer rounded-lg border border-line bg-surface p-4 text-left shadow-sm transition-colors hover:border-amber-300 hover:bg-amber-50/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
-            >
-              {content}
-            </button>
-          ) : (
+          const interactiveClass =
+            'cursor-pointer rounded-lg border border-line bg-surface p-4 text-left shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2'
+
+          if (s.to) {
+            return (
+              <Link
+                key={s.label}
+                to={s.to}
+                className={`${interactiveClass} ${s.hoverClass ?? ''}`}
+              >
+                {content}
+              </Link>
+            )
+          }
+
+          if (s.onClick) {
+            return (
+              <button
+                key={s.label}
+                type="button"
+                onClick={s.onClick}
+                aria-label={`View ${s.value} ${s.label.toLowerCase()} items`}
+                className={`${interactiveClass} ${s.hoverClass ?? ''}`}
+              >
+                {content}
+              </button>
+            )
+          }
+
+          return (
             <Card key={s.label} className="p-4">
               {content}
             </Card>
